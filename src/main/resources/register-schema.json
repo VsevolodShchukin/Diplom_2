@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "success": {
+      "type": "boolean"
+    },
+    "user": {
+      "type": "object",
+      "items": {
+        "email": "string",
+        "name": "string"
+      }
+    },
+    "accessToken": {
+      "type": "string"
+    },
+    "refreshToken": {
+      "type": "string"
+    }
+  }
+}

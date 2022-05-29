@@ -5,7 +5,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import models.PostBaseModel;
+import models.BaseModel;
 import org.junit.Assert;
 
 import static io.restassured.RestAssured.given;
@@ -33,15 +33,45 @@ public class BaseMethods {
         Assert.assertEquals(expectedBody, responseBody);
     }
 
-
     @Step("Send Post request")
-    public static Response sendPostRequest(PostBaseModel request, String url) {
+    public static Response sendPostRequest(BaseModel request, String url) {
         Response response = given()
                 .spec(getBaseSpec())
                 .and()
                 .body(request)
                 .when()
                 .post(url);
+        return response;
+    }
+
+    @Step("Send Patch request")
+    public static Response sendPatchRequest(BaseModel request, String url, String token) {
+        Response response = given()
+                .spec(getBaseSpec())
+                .auth().oauth2(token)
+                .and()
+                .body(request)
+                .when()
+                .patch(url);
+        return response;
+    }
+
+    @Step("Send Get request")
+    public static Response sendGetRequest(String url) {
+        Response response = given()
+                .spec(getBaseSpec())
+                .when()
+                .get(url);
+        return response;
+    }
+
+    @Step("Send Get request")
+    public static Response sendGetRequest(String url, String token) {
+        Response response = given()
+                .spec(getBaseSpec())
+                .auth().oauth2(token)
+                .when()
+                .get(url);
         return response;
     }
 

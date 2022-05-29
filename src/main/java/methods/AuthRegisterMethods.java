@@ -4,7 +4,7 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import models.UserPostModel;
 
-public class PostAuthRegisterMethods extends BaseMethods {
+public class AuthRegisterMethods extends BaseMethods {
 
     private final String url = "/api/auth/register";
 

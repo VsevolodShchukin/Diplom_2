@@ -1,7 +1,7 @@
 package models;
 
 
-public class UserPostModel implements PostBaseModel {
+public class UserPostModel implements BaseModel {
 
     private String email;
     private String password;
@@ -23,5 +23,17 @@ public class UserPostModel implements PostBaseModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getName() {
+        return name;
     }
 }

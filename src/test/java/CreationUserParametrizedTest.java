@@ -1,6 +1,6 @@
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
-import methods.PostAuthRegisterMethods;
+import methods.AuthRegisterMethods;
 import models.UserPostModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class CreationUserParametrizedTest {
         };
     }
 
-    PostAuthRegisterMethods methods = new PostAuthRegisterMethods();
+    AuthRegisterMethods methods = new AuthRegisterMethods();
 
     private final String userRequiredFieldsResponseMessage = "{\"success\":false,\"message\":\"Email, password and name are required fields\"}";
 
