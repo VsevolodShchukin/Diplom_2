@@ -6,7 +6,11 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import models.BaseModel;
+import models.UserPostModel;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
+
+import java.util.ArrayList;
 
 import static io.restassured.RestAssured.given;
 
@@ -27,16 +31,37 @@ public class BaseMethods {
         Assert.assertEquals(code, responseCode);
     }
 
-    @Step("Check body from response")
-    public void checkBodyFromResponse(Response response, String expectedBody) {
-        String responseBody = response.body().asString();
-        Assert.assertEquals(expectedBody, responseBody);
+    @Step("Check field from response")
+    public void checkFieldFromResponse(Response response, String path, String expectedValue) {
+        Assert.assertEquals(expectedValue, response.path(path));
+    }
+
+    @Step("Check field from response")
+    public void checkFieldFromResponse(Response response, String path, Boolean expectedValue) {
+        Assert.assertEquals(expectedValue, response.path(path));
+    }
+
+    @Step("Check field from response")
+    public void checkFieldFromResponse(Response response, String path, ArrayList expectedValue) {
+        Assert.assertEquals(expectedValue, response.path(path));
     }
 
     @Step("Send Post request")
     public static Response sendPostRequest(BaseModel request, String url) {
         Response response = given()
                 .spec(getBaseSpec())
+                .and()
+                .body(request)
+                .when()
+                .post(url);
+        return response;
+    }
+
+    @Step("Send Post request")
+    public static Response sendPostRequest(BaseModel request, String url, String token) {
+        Response response = given()
+                .spec(getBaseSpec())
+                .auth().oauth2(token)
                 .and()
                 .body(request)
                 .when()
@@ -56,12 +81,14 @@ public class BaseMethods {
         return response;
     }
 
-    @Step("Send Get request")
-    public static Response sendGetRequest(String url) {
+    @Step("Send Patch request without token")
+    public static Response sendPatchRequest(UserPostModel userPost, String url) {
         Response response = given()
                 .spec(getBaseSpec())
+                .and()
+                .body(userPost)
                 .when()
-                .get(url);
+                .patch(url);
         return response;
     }
 
@@ -73,6 +100,22 @@ public class BaseMethods {
                 .when()
                 .get(url);
         return response;
+    }
+
+    @Step("Send Get request")
+    public static Response sendGetRequest(String url) {
+        Response response = given()
+                .spec(getBaseSpec())
+                .when()
+                .get(url);
+        return response;
+    }
+
+    @Step("Prepare data for new user")
+    public UserPostModel createNewUser() {
+        String randomData = RandomStringUtils.randomAlphabetic(10);
+        UserPostModel userPost = new UserPostModel(randomData + "@example.com", randomData, randomData);
+        return userPost;
     }
 
 }

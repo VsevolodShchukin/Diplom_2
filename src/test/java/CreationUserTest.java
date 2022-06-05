@@ -4,15 +4,12 @@ import methods.AuthRegisterMethods;
 import models.UserPostModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 public class CreationUserTest {
 
-    private final String userAlreadyExistResponseMessage = "{\"success\":false,\"message\":\"User already exists\"}";
-
-    AuthRegisterMethods methods = new AuthRegisterMethods();
+    AuthRegisterMethods authRegisterMethods = new AuthRegisterMethods();
     UserPostModel userPost;
 
     @Before
@@ -32,19 +29,20 @@ public class CreationUserTest {
     @Test
     @DisplayName("Возможно создать уникального пользователя")
     public void shouldCreateUniqueUserTest() {
-        Response response = methods.sendPostAuthRegisterRequest(userPost);
-        methods.checkStatusCode(response, 200);
-        Assert.assertEquals(response.path("success"), true);
+        Response response = authRegisterMethods.sendPostAuthRegisterRequest(userPost);
+        authRegisterMethods.checkStatusCode(response, 200);
+        authRegisterMethods.checkFieldFromResponse(response, "success", true);
     }
 
     @Test
     @DisplayName("Невозможно создать пользователя, который уже зарегистрирован")
     public void impossibleToCreateNonUniqueUserTest() {
-        Response responseBeforeCreation = methods.sendPostAuthRegisterRequest(userPost);
-        methods.checkStatusCode(responseBeforeCreation, 200);
-        Response responseAfterCreation = methods.sendPostAuthRegisterRequest(userPost);
-        methods.checkStatusCode(responseAfterCreation, 403);
-        methods.checkBodyFromResponse(responseAfterCreation, userAlreadyExistResponseMessage);
+        Response responseBeforeCreation = authRegisterMethods.sendPostAuthRegisterRequest(userPost);
+        authRegisterMethods.checkStatusCode(responseBeforeCreation, 200);
+        Response responseAfterCreation = authRegisterMethods.sendPostAuthRegisterRequest(userPost);
+        authRegisterMethods.checkStatusCode(responseAfterCreation, 403);
+        authRegisterMethods.checkFieldFromResponse(responseAfterCreation, "success", false);
+        authRegisterMethods.checkFieldFromResponse(responseAfterCreation, "message", "User already exists");
 
     }
 

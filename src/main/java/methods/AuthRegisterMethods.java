@@ -14,5 +14,13 @@ public class AuthRegisterMethods extends BaseMethods {
         return response;
     }
 
+    @Step("Register new user")
+    public String registerNewUser(UserPostModel userPost) {
+        Response response = sendPostAuthRegisterRequest(userPost);
+        checkStatusCode(response, 200);
+        String accessToken = response.body().path("accessToken").toString().split(" ")[1];
+        return accessToken;
+    }
+
 
 }

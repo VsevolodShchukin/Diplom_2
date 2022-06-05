@@ -30,18 +30,17 @@ public class CreationUserParametrizedTest {
         };
     }
 
-    AuthRegisterMethods methods = new AuthRegisterMethods();
-
-    private final String userRequiredFieldsResponseMessage = "{\"success\":false,\"message\":\"Email, password and name are required fields\"}";
+    AuthRegisterMethods authRegisterMethods = new AuthRegisterMethods();
 
 
     @Test
     @DisplayName("Невозможно не заполнить одно из обязательных полей и создать пользователя")
     public void impossibleToCreateUserWithoutRequiredFieldTest() {
         UserPostModel userPost = new UserPostModel(email, password, name);
-        Response response = methods.sendPostAuthRegisterRequest(userPost);
-        methods.checkStatusCode(response, 403);
-        methods.checkBodyFromResponse(response, userRequiredFieldsResponseMessage);
+        Response response = authRegisterMethods.sendPostAuthRegisterRequest(userPost);
+        authRegisterMethods.checkStatusCode(response, 403);
+        authRegisterMethods.checkFieldFromResponse(response, "success", false);
+        authRegisterMethods.checkFieldFromResponse(response, "message", "Email, password and name are required fields");
 
     }
 
