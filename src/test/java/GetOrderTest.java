@@ -1,5 +1,7 @@
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import methods.AuthRegisterMethods;
+import methods.AuthUserMethods;
 import methods.IngredientMethods;
 import methods.OrdersMethods;
 import models.OrderPostModel;
@@ -12,8 +14,8 @@ import java.util.ArrayList;
 
 public class GetOrderTest {
 
-    String token;
     UserPostModel userPost;
+    String token;
     ArrayList<String> ingredient = new ArrayList<>();
 
     OrdersMethods ordersMethods = new OrdersMethods();
@@ -36,9 +38,12 @@ public class GetOrderTest {
     public void tearDown() {
         System.out.println("Tear down");
         //Ручка на удаления пользака
+        AuthUserMethods authUserMethods = new AuthUserMethods();
+        authUserMethods.sendDeleteUserRequest(token);
     }
 
     @Test
+    @DisplayName("Получение заказа авторизованным пользователем")
     public void getOrderByAuthorizedUserTest() {
         Response response = ordersMethods.sendGetOrderRequest(token);
         ordersMethods.checkStatusCode(response, 200);
@@ -47,6 +52,7 @@ public class GetOrderTest {
     }
 
     @Test
+    @DisplayName("Получение заказа неавторизованным пользователем")
     public void getOrderByUnauthorizedUserTest() {
         Response response = ordersMethods.sendGetOrderRequest();
         ordersMethods.checkStatusCode(response, 401);

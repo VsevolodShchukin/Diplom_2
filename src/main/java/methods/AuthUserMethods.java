@@ -3,10 +3,6 @@ package methods;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import models.UserPostModel;
-import org.junit.Assert;
-
-import static io.restassured.RestAssured.given;
-
 
 public class AuthUserMethods extends BaseMethods {
 
@@ -30,20 +26,14 @@ public class AuthUserMethods extends BaseMethods {
         return response;
     }
 
-    @Step("Send patch request and check the field")
-    public void sendPatchUserRequestAndCheckTheResponseBody(UserPostModel userPost, String accessToken, Boolean isAuthorized, String path, String expectedValue) {
-        if(isAuthorized) {
-            Response responsePatch = sendPatchUserRequest(userPost, accessToken);
-            checkStatusCode(responsePatch, 200);
-            Response responseGet = sendGetUserRequest(accessToken);
-            checkStatusCode(responseGet, 200);
-            Assert.assertEquals(responseGet.path("user." + path), expectedValue);
-        } else {
-            Response responsePatch = sendPatchUserRequest(userPost);
-            checkStatusCode(responsePatch, 401);
-            Assert.assertEquals(responsePatch.path("success"), false);
-            Assert.assertEquals(responsePatch.path("message"), "You should be authorised");
+    @Step("Send delete /api/auth/user request")
+    public Response sendDeleteUserRequest(String token) {
+        if(token == null) {
+            return null;
         }
+        Response response = sendDeleteRequest(url, token);
+        return response;
     }
+
 }
 

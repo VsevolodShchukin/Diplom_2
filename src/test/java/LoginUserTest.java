@@ -2,6 +2,7 @@ import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import methods.AuthRegisterMethods;
 import methods.AuthLoginMethods;
+import methods.AuthUserMethods;
 import models.UserPostModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -10,15 +11,17 @@ import org.junit.Test;
 
 public class LoginUserTest {
 
-    AuthLoginMethods authLoginMethods = new AuthLoginMethods();
     UserPostModel userPost;
+    String token;
+
+    AuthLoginMethods authLoginMethods = new AuthLoginMethods();
 
     @Before
     public void setUp() {
         System.out.println("Set up");
         AuthRegisterMethods authRegisterMethods = new AuthRegisterMethods();
         userPost = authRegisterMethods.createNewUser();
-        authRegisterMethods.registerNewUser(userPost);
+        token = authRegisterMethods.registerNewUser(userPost);
         //формат тела близок к телу запроса /api/auth/register
         //Решил не создавать отдельный класс для Login, а просто удалить 1 поле после регистрации
         //для запроса авторизации
@@ -29,6 +32,8 @@ public class LoginUserTest {
     public void tearDown() {
         System.out.println("Tear down");
         //Ручка на удаления пользака
+        AuthUserMethods authUserMethods = new AuthUserMethods();
+        authUserMethods.sendDeleteUserRequest(token);
     }
 
     @Test

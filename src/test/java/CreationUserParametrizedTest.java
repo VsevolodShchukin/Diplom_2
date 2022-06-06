@@ -32,7 +32,6 @@ public class CreationUserParametrizedTest {
 
     AuthRegisterMethods authRegisterMethods = new AuthRegisterMethods();
 
-
     @Test
     @DisplayName("Невозможно не заполнить одно из обязательных полей и создать пользователя")
     public void impossibleToCreateUserWithoutRequiredFieldTest() {
@@ -41,7 +40,6 @@ public class CreationUserParametrizedTest {
         authRegisterMethods.checkStatusCode(response, 403);
         authRegisterMethods.checkFieldFromResponse(response, "success", false);
         authRegisterMethods.checkFieldFromResponse(response, "message", "Email, password and name are required fields");
-
     }
 
 }

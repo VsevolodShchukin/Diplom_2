@@ -111,6 +111,17 @@ public class BaseMethods {
         return response;
     }
 
+    @Step("Send Delete request")
+    public static Response sendDeleteRequest(String url, String token) {
+        Response response = given()
+                .spec(getBaseSpec())
+                .auth().oauth2(token)
+                .and()
+                .when()
+                .delete(url);
+        return response;
+    }
+
     @Step("Prepare data for new user")
     public UserPostModel createNewUser() {
         String randomData = RandomStringUtils.randomAlphabetic(10);

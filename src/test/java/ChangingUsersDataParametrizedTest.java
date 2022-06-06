@@ -1,9 +1,11 @@
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
 import methods.AuthRegisterMethods;
 import methods.AuthUserMethods;
 import models.UserPostModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -16,7 +18,6 @@ public class ChangingUsersDataParametrizedTest {
     private final String email;
     private final String name;
     private final Boolean isAuthorized;
-    UserPostModel userPost;
 
     public ChangingUsersDataParametrizedTest(String newRandomData, Boolean isAuthorized) {
         this.email = newRandomData.toLowerCase(Locale.ROOT) + "@example.com";
@@ -33,30 +34,51 @@ public class ChangingUsersDataParametrizedTest {
         };
     }
 
+    UserPostModel userPost;
+    String token;
 
     AuthUserMethods authUserMethods = new AuthUserMethods();
-    AuthRegisterMethods authRegisterMethods = new AuthRegisterMethods();
 
+    @Before
+    public void setUp() {
+        System.out.println("Set up");
+        AuthRegisterMethods authRegisterMethods = new AuthRegisterMethods();
+        userPost = authRegisterMethods.createNewUser();
+        token = authRegisterMethods.registerNewUser(userPost);
+    }
 
     @After
     public void tearDown() {
         System.out.println("Tear down");
         //Ручка на удаления пользака
+        AuthUserMethods authUserMethods = new AuthUserMethods();
+        Response response = authUserMethods.sendDeleteUserRequest(token);
+        authUserMethods.checkStatusCode(response, 202);
+
     }
 
     @Test
-    @DisplayName("Изменения данных пользователя с авторизацией")
+    @DisplayName("Изменения данных пользователя")
     public void shouldChangeUsersDataTest() {
-        //Создаем и регистрируем пользователя, сохраняем токен
-        userPost = authRegisterMethods.createNewUser();
-        String accessToken = authRegisterMethods.registerNewUser(userPost);
 
-        //Отправляем PATH запросы и проверяем изменения
         userPost.setEmail(email);
-        authUserMethods.sendPatchUserRequestAndCheckTheResponseBody(userPost, accessToken, isAuthorized, "email", userPost.getEmail());
-
         userPost.setName(name);
-        authUserMethods.sendPatchUserRequestAndCheckTheResponseBody(userPost, accessToken, isAuthorized, "name", userPost.getName());
+
+        if(isAuthorized) {
+            Response responsePatch = authUserMethods.sendPatchUserRequest(userPost, token);
+            authUserMethods.checkStatusCode(responsePatch, 200);
+            Response responseGet = authUserMethods.sendGetUserRequest(token);
+            authUserMethods.checkStatusCode(responseGet, 200);
+            authUserMethods.checkFieldFromResponse(responseGet, "success", true);
+            authUserMethods.checkFieldFromResponse(responseGet, "user.email", email);
+            authUserMethods.checkFieldFromResponse(responseGet, "user.name", name);
+        } else {
+            Response responsePatch = authUserMethods.sendPatchUserRequest(userPost);
+            authUserMethods.checkStatusCode(responsePatch, 401);
+            authUserMethods.checkFieldFromResponse(responsePatch, "success", false);
+            authUserMethods.checkFieldFromResponse(responsePatch, "message", "You should be authorised");
+        }
+
     }
 
 }

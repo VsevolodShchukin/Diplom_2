@@ -2,10 +2,8 @@ package methods;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import models.BaseModel;
 import models.OrderPostModel;
 
-import static io.restassured.RestAssured.given;
 
 
 public class OrdersMethods extends BaseMethods{

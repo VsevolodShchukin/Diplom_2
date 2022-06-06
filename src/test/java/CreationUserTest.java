@@ -1,6 +1,7 @@
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import methods.AuthRegisterMethods;
+import methods.AuthUserMethods;
 import models.UserPostModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -9,8 +10,10 @@ import org.junit.Test;
 
 public class CreationUserTest {
 
-    AuthRegisterMethods authRegisterMethods = new AuthRegisterMethods();
     UserPostModel userPost;
+    String token;
+
+    AuthRegisterMethods authRegisterMethods = new AuthRegisterMethods();
 
     @Before
     public void setUp() {
@@ -23,6 +26,8 @@ public class CreationUserTest {
     public void tearDown() {
         System.out.println("Tear down");
         //Ручка на удаления пользака
+        AuthUserMethods authUserMethods = new AuthUserMethods();
+        authUserMethods.sendDeleteUserRequest(token);
     }
 
 
@@ -32,6 +37,7 @@ public class CreationUserTest {
         Response response = authRegisterMethods.sendPostAuthRegisterRequest(userPost);
         authRegisterMethods.checkStatusCode(response, 200);
         authRegisterMethods.checkFieldFromResponse(response, "success", true);
+        token = response.body().path("accessToken").toString().split(" ")[1];
     }
 
     @Test
@@ -43,7 +49,6 @@ public class CreationUserTest {
         authRegisterMethods.checkStatusCode(responseAfterCreation, 403);
         authRegisterMethods.checkFieldFromResponse(responseAfterCreation, "success", false);
         authRegisterMethods.checkFieldFromResponse(responseAfterCreation, "message", "User already exists");
-
     }
 
 }
