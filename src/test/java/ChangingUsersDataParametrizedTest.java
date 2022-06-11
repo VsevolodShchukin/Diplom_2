@@ -18,6 +18,8 @@ public class ChangingUsersDataParametrizedTest {
     private final String email;
     private final String name;
     private final Boolean isAuthorized;
+    UserPostModel userPost;
+    String token;
 
     public ChangingUsersDataParametrizedTest(String newRandomData, Boolean isAuthorized) {
         this.email = newRandomData.toLowerCase(Locale.ROOT) + "@example.com";
@@ -33,9 +35,6 @@ public class ChangingUsersDataParametrizedTest {
                 {newRandomData, false}
         };
     }
-
-    UserPostModel userPost;
-    String token;
 
     AuthUserMethods authUserMethods = new AuthUserMethods();
 

@@ -46,6 +46,12 @@ public class CreationUserTest {
         Response responseBeforeCreation = authRegisterMethods.sendPostAuthRegisterRequest(userPost);
         authRegisterMethods.checkStatusCode(responseBeforeCreation, 200);
         Response responseAfterCreation = authRegisterMethods.sendPostAuthRegisterRequest(userPost);
+        if(responseAfterCreation.statusCode() == 200) {
+            System.out.println("Пользователь был создан, хотя не должен был!");
+            String token = responseAfterCreation.body().path("accessToken").toString().split(" ")[1];
+            AuthUserMethods authUserMethods = new AuthUserMethods();
+            authUserMethods.sendDeleteUserRequest(token);
+        }
         authRegisterMethods.checkStatusCode(responseAfterCreation, 403);
         authRegisterMethods.checkFieldFromResponse(responseAfterCreation, "success", false);
         authRegisterMethods.checkFieldFromResponse(responseAfterCreation, "message", "User already exists");

@@ -22,6 +22,8 @@ public class CreationOrderParametrizedTest {
     private final ArrayList<String> ingredient;
     private final int statusCode;
     private final Boolean expectedValue;
+    String token;
+    UserPostModel userPost;
 
     public CreationOrderParametrizedTest(Boolean isAuthorized, ArrayList<String> ingredient, int statusCode, Boolean expectedValue) {
         this.isAuthorized = isAuthorized;
@@ -47,9 +49,6 @@ public class CreationOrderParametrizedTest {
                 {false, ingredientsWithWrongHash, 500, null},
         };
     }
-
-    String token;
-    UserPostModel userPost;
 
     OrdersMethods ordersMethods = new OrdersMethods();
 

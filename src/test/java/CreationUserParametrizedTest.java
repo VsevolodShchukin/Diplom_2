@@ -1,6 +1,7 @@
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import methods.AuthRegisterMethods;
+import methods.AuthUserMethods;
 import models.UserPostModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
@@ -37,6 +38,12 @@ public class CreationUserParametrizedTest {
     public void impossibleToCreateUserWithoutRequiredFieldTest() {
         UserPostModel userPost = new UserPostModel(email, password, name);
         Response response = authRegisterMethods.sendPostAuthRegisterRequest(userPost);
+        if(response.statusCode() == 200) {
+            System.out.println("Пользователь был создан, хотя не должен был!");
+            String token = response.body().path("accessToken").toString().split(" ")[1];
+            AuthUserMethods authUserMethods = new AuthUserMethods();
+            authUserMethods.sendDeleteUserRequest(token);
+        }
         authRegisterMethods.checkStatusCode(response, 403);
         authRegisterMethods.checkFieldFromResponse(response, "success", false);
         authRegisterMethods.checkFieldFromResponse(response, "message", "Email, password and name are required fields");
