@@ -57,7 +57,7 @@ public class BaseMethods {
         return response;
     }
 
-    @Step("Send Post request")
+    @Step("Send Post request  with token")
     public static Response sendPostRequest(BaseModel request, String url, String token) {
         Response response = given()
                 .spec(getBaseSpec())
@@ -69,7 +69,7 @@ public class BaseMethods {
         return response;
     }
 
-    @Step("Send Patch request")
+    @Step("Send Patch request  with token")
     public static Response sendPatchRequest(BaseModel request, String url, String token) {
         Response response = given()
                 .spec(getBaseSpec())
@@ -92,7 +92,7 @@ public class BaseMethods {
         return response;
     }
 
-    @Step("Send Get request")
+    @Step("Send Get request with token")
     public static Response sendGetRequest(String url, String token) {
         Response response = given()
                 .spec(getBaseSpec())
@@ -111,7 +111,7 @@ public class BaseMethods {
         return response;
     }
 
-    @Step("Send Delete request")
+    @Step("Send Delete request  with token")
     public static Response sendDeleteRequest(String url, String token) {
         Response response = given()
                 .spec(getBaseSpec())
